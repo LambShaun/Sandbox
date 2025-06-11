@@ -1,47 +1,15 @@
+#include "Platform/Window.h"
+#include <memory>
+
 #include <Windows.h>
-#include <string>
-static HWND m_hWnd;
-const wchar_t CLASS_NAME[] = L"TestWindow";
-LRESULT CALLBACK Wndproc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
-	switch (uMsg) {
-	case WM_CLOSE:
-		DestroyWindow(hWnd);  
-		return 0;
-	case WM_DESTROY:
-		PostQuitMessage(0);  
-		return 0;
+
+class SandboxApp {
+public: 
+	SandboxApp() {
+		m_Window = std::unique_ptr<Luxon::Window>(Luxon::Window::Create());
 	}
-	return DefWindowProcW(hWnd, uMsg, wParam, lParam);
-}
 
-
-int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow) {
-	
-	WNDCLASSEXW wc = {};
-		wc.cbSize= sizeof(WNDCLASSEXW);
-		wc.lpfnWndProc = Wndproc;
-		wc.hInstance = hInstance;
-		wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-		wc.lpszClassName = CLASS_NAME;
-
-		RegisterClassExW(&wc);
-
-		m_hWnd = CreateWindowExW(
-			0,
-			CLASS_NAME,
-			L"My Test Window",
-			WS_OVERLAPPEDWINDOW,
-			CW_USEDEFAULT,
-			CW_USEDEFAULT,
-			CW_USEDEFAULT,
-			CW_USEDEFAULT,
-			NULL,
-			NULL,
-			hInstance,
-			NULL);
-	
-		ShowWindow(m_hWnd, SW_SHOW);
-
+	void Run() {
 		bool running = true;
 		MSG Msg;
 		while (running) {
@@ -53,8 +21,16 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 					TranslateMessage(&Msg);
 					DispatchMessage(&Msg);
 				}
-				
-			}	
+
+			}
 		}
+	}
+
+private:
+	std::unique_ptr<Luxon::Window> m_Window;
+};
+int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow) {
+	SandboxApp* app = new SandboxApp();
+	app->Run();
 	return 0;
 }
