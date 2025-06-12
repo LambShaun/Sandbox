@@ -9,6 +9,8 @@
 #include <cstdint>
 
 namespace Luxon {
+namespace Function {
+namespace Rendering {
 	struct Color {
 		uint8_t r, g, b, a; // RGBA (0~255)
 	};
@@ -24,4 +26,7 @@ namespace Luxon {
 		// »æÍ¼(¾ØÐÎ)
 		virtual void DrawRect(int x, int y, int width, int height, const Color& color) = 0;
 	};
+
+} // namespace Rendering
+} // namespace Function
 } // namespace Luxon

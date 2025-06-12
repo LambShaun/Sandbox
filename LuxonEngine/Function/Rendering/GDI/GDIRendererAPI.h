@@ -11,6 +11,9 @@
 #include <Windows.h>
 
 namespace Luxon {
+namespace Function {
+namespace Rendering {
+namespace GDI {
 	class GDIRendererAPI :public RendererAPI {
 	public:
 		virtual void Init(void* nativeWindowHandle) override;
@@ -31,4 +34,7 @@ namespace Luxon {
 		static COLORREF m_ClearColor;   // ÇåÆÁÑÕÉ«
 	};
 
+} // namespace GDI
+} // namespace Rendering
+} // namespace Function
 } // namespace Luxon

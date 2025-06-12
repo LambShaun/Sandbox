@@ -9,6 +9,7 @@
 #include<string>
 
 namespace Luxon { 
+namespace Platform{
 	// ¥∞ø⁄≈‰÷√ Ù–‘
 	struct WindowProps { 
 		std::string Title;
@@ -32,4 +33,5 @@ namespace Luxon {
 		static Window* Create(const WindowProps& props = WindowProps());
 	};
 
+} // namespace Platform
 } // namespace Luxon

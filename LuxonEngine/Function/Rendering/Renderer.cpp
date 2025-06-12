@@ -2,10 +2,12 @@
 #include "GDI/GDIRendererAPI.h"
 
 namespace Luxon {
-	std::unique_ptr<RendererAPI> Renderer::s_RendererAPI = nullptr;
+namespace Function {
+namespace Rendering {
+	std::unique_ptr<Rendering::RendererAPI> Renderer::s_RendererAPI = nullptr;
 	
 	void Renderer::Init(void* nativeWindowHandle) {
-		s_RendererAPI = std::make_unique<GDIRendererAPI>();
+		s_RendererAPI = std::make_unique<Rendering::GDI::GDIRendererAPI>();
 		s_RendererAPI->Init(nativeWindowHandle);
 	}
 
@@ -32,4 +34,7 @@ namespace Luxon {
 	void Renderer::DrawRect(int x, int y, int width, int height, const Color& color) {
 		s_RendererAPI->DrawRect(x, y, width ,height, color);
 	}
-}
+
+} // namespace Rendering
+} // namespace Function
+} // namespace Luxon

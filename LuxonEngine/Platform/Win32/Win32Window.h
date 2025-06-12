@@ -10,7 +10,9 @@
 #include <Windows.h>
 
 namespace Luxon {
-	class Win32Window :public Window {
+namespace Platform {
+namespace Win32 {
+	class Win32Window : public Platform::Window {
 	public:
 		Win32Window(const WindowProps& props);
 		virtual ~Win32Window();
@@ -42,4 +44,6 @@ namespace Luxon {
 		WindowData m_Data;
 	};
 
+} // namespace Win32
+} // namespace Platform
 } // namespace Luxon

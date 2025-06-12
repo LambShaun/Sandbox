@@ -11,6 +11,8 @@
 #include <memory>
 
 namespace Luxon {
+namespace Function {
+namespace Rendering {
 	class Renderer {
 	public:
 		static void Init(void* nativeWindowHandle);
@@ -25,4 +27,7 @@ namespace Luxon {
 	private:
 		static std::unique_ptr<RendererAPI>s_RendererAPI;
 	};
-}
+
+} // namespace Rendering
+} // namespace Function
+} // namespace Luxon

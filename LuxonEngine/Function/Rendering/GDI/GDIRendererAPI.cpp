@@ -3,6 +3,9 @@
 #include <stdexcept>
 
 namespace Luxon {
+namespace Function {
+namespace Rendering {
+namespace GDI {
 	HWND GDIRendererAPI::s_hWnd = NULL;
 	HDC GDIRendererAPI::s_hWindowDC = NULL;
 	HDC GDIRendererAPI::s_hMemoryDC = NULL;
@@ -70,5 +73,8 @@ namespace Luxon {
 	void GDIRendererAPI::EndScene() {
 		BitBlt(s_hWindowDC, 0, 0, s_Width, s_Height, s_hMemoryDC, 0, 0, SRCCOPY); // ¸´ÖÆ»­Ãæµ½ÆÁÄ»
 	}
-	
+
+} // namespace GDI
+} // namespace Rendering
+} // namespace Function
 } // namespace Luxon
