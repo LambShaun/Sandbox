@@ -3,6 +3,7 @@
 #include "Function/Input/Input.h"
 #include "Core/Math/Vec2D.h"
 #include "Core/Time/Time.h"
+#include "Resource/Texture.h"
 
 #include <memory>
 #include <Windows.h>
@@ -12,6 +13,7 @@ public:
 	SandboxApp() {
 		m_Window = std::unique_ptr<Luxon::Platform::Window>(Luxon::Platform::Window::Create());
 		Luxon::Function::Rendering::Renderer::Init(m_Window->GetNativeWindow());	
+		m_Texture = Luxon::Resource::Texture::Load("assets/test.bmp");
 	}
 	~SandboxApp() {
 		Luxon::Function::Rendering::Renderer::Shutdown();
@@ -38,7 +40,10 @@ public:
 		Luxon::Function::Rendering::Renderer::BeginScene();
 		Luxon::Function::Rendering::Renderer::SetClearColor({ 30,30,30,255 });
 		Luxon::Function::Rendering::Renderer::Clear();
-		Luxon::Function::Rendering::Renderer::DrawRect((int)m_RectPosition.x, (int)m_RectPosition.y, 200, 150, { 255,0,0,255 });
+		// Luxon::Function::Rendering::Renderer::DrawRect((int)m_RectPosition.x, (int)m_RectPosition.y, 200, 150, { 255,0,0,255 });
+		if (m_Texture) {
+			Luxon::Function::Rendering::Renderer::DrawImage((int)m_RectPosition.x,(int)m_RectPosition.y, *m_Texture);
+		}
 		Luxon::Function::Rendering::Renderer::EndScene();
 	}
 
@@ -62,6 +67,7 @@ public:
 private:
 	std::unique_ptr<Luxon::Platform::Window> m_Window;
 	Luxon::Core::Math::Vector2f m_RectPosition = { 100.0f,100.0f }; // Œª÷√œÚ¡ø
+	std::unique_ptr<Luxon::Resource::Texture> m_Texture;
 };
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow) {
 	SandboxApp* app = new SandboxApp();
