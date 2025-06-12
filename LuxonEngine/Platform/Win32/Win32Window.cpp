@@ -1,5 +1,6 @@
 #include "Platform/Window.h"
 #include "Win32Window.h"
+#include "Function/Input/Input.h"
 
 // 窗口消息处理函数
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
@@ -8,7 +9,18 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 		PostQuitMessage(0);
 		return 0;
 	}break;
+
+	case WM_KEYDOWN: { // 按键按下消息处理
+		// wParam 参数在这里代表被按下的键的虚拟码
+		Luxon::Input::SetKeyPressed(wParam, true);
+		return 0;
+	}break;
  
+	case WM_KEYUP: {
+		Luxon::Input::SetKeyPressed(wParam, false);
+		return 0;
+	}break;
+					
 	}
 	return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
