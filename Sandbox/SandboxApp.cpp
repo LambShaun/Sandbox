@@ -2,6 +2,7 @@
 #include "Function/Rendering/Renderer.h"
 #include "Function/Input/Input.h"
 #include "Core/Math/Vec2D.h"
+#include "Core/Time/Time.h"
 
 #include <memory>
 #include <Windows.h>
@@ -9,11 +10,36 @@
 class SandboxApp {
 public: 
 	SandboxApp() {
-		m_Window = std::unique_ptr<Luxon::Window>(Luxon::Window::Create());
-		Luxon::Renderer::Init(m_Window->GetNativeWindow());	
+		m_Window = std::unique_ptr<Luxon::Platform::Window>(Luxon::Platform::Window::Create());
+		Luxon::Function::Rendering::Renderer::Init(m_Window->GetNativeWindow());	
 	}
 	~SandboxApp() {
-		Luxon::Renderer::Shutdown();
+		Luxon::Function::Rendering::Renderer::Shutdown();
+	}
+
+	void OnUpdate()
+	{
+		// 从中央时钟获取当前帧的时间增量
+		Luxon::Core::Time::Timestep ts = Luxon::Core::Time::Time::GetDeltaTime();
+
+		// 逻辑更新
+		Luxon::Core::Math::Vector2f direction = { 0.0f, 0.0f };
+		if (Luxon::Function::Input::Input::IsKeyPressed('W')) direction.y = -1.0f;
+		if (Luxon::Function::Input::Input::IsKeyPressed('S')) direction.y = 1.0f;
+		if (Luxon::Function::Input::Input::IsKeyPressed('A')) direction.x = -1.0f;
+		if (Luxon::Function::Input::Input::IsKeyPressed('D')) direction.x = 1.0f;
+
+		if (direction.LengthSquared() > 0.0f) direction.Normalize();
+
+		float speed = 1000.0f;
+		m_RectPosition += direction * speed * ts;
+
+		// Renderer
+		Luxon::Function::Rendering::Renderer::BeginScene();
+		Luxon::Function::Rendering::Renderer::SetClearColor({ 30,30,30,255 });
+		Luxon::Function::Rendering::Renderer::Clear();
+		Luxon::Function::Rendering::Renderer::DrawRect((int)m_RectPosition.x, (int)m_RectPosition.y, 200, 150, { 255,0,0,255 });
+		Luxon::Function::Rendering::Renderer::EndScene();
 	}
 
 	void Run() {
@@ -27,44 +53,15 @@ public:
 					TranslateMessage(&Msg);
 					DispatchMessage(&Msg);
 			} else {
-				// MOVE
-				Luxon::Core::Vector2f direction = { 0.0f,0.0f }; // 方向向量
-
-				if (Luxon::Input::isKeyPressed('W')) {
-					direction.y = -1.0f;
-				}
-
-				if (Luxon::Input::isKeyPressed('S')) {
-					direction.y = 1.0f;
-				}
-
-				if (Luxon::Input::isKeyPressed('A')) {
-					direction.x = -1.0f;
-				}
-
-				if (Luxon::Input::isKeyPressed('D')) {
-					direction.x = 1.0f;
-				}
-
-				// 将方向向量乘以速度，得到最终的速度向量，并更新位置
-				float speed = 1.0f;
-				m_RectPosition += direction * speed;
-
-				// Renderer
-				Luxon::Renderer::BeginScene();
-				Luxon::Renderer::SetClearColor({ 50, 30, 30, 255 });
-				Luxon::Renderer::Clear();
-				Luxon::Renderer::DrawRect((int)m_RectPosition.x,
-										  (int)m_RectPosition.y, 
-										100, 100, { 0,0,255,255 });
-				Luxon::Renderer::EndScene();
+				Luxon::Core::Time::Time::Tick(); 
+				OnUpdate();
 			}
 		}
 	}
 
 private:
-	std::unique_ptr<Luxon::Window> m_Window;
-	Luxon::Core::Vector2f m_RectPosition = { 100.0f,100.0f }; // 位置向量
+	std::unique_ptr<Luxon::Platform::Window> m_Window;
+	Luxon::Core::Math::Vector2f m_RectPosition = { 100.0f,100.0f }; // 位置向量
 };
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow) {
 	SandboxApp* app = new SandboxApp();
