@@ -1,6 +1,7 @@
 #include "Platform/Window.h"
 #include "Function/Rendering/Renderer.h"
 #include "Function/Input/Input.h"
+#include "Core/Math/Vec2D.h"
 
 #include <memory>
 #include <Windows.h>
@@ -27,28 +28,35 @@ public:
 					DispatchMessage(&Msg);
 			} else {
 				// MOVE
-				float speed = 1.0f;
+				Luxon::Core::Vector2f direction = { 0.0f,0.0f }; // 方向向量
+
 				if (Luxon::Input::isKeyPressed('W')) {
-					m_RectY -= speed;
+					direction.y = -1.0f;
 				}
 
 				if (Luxon::Input::isKeyPressed('S')) {
-					m_RectY += speed;
+					direction.y = 1.0f;
 				}
 
 				if (Luxon::Input::isKeyPressed('A')) {
-					m_RectX -= speed;
+					direction.x = -1.0f;
 				}
 
 				if (Luxon::Input::isKeyPressed('D')) {
-					m_RectX += speed;
+					direction.x = 1.0f;
 				}
+
+				// 将方向向量乘以速度，得到最终的速度向量，并更新位置
+				float speed = 1.0f;
+				m_RectPosition += direction * speed;
 
 				// Renderer
 				Luxon::Renderer::BeginScene();
-				Luxon::Renderer::SetClearColor({ 255, 30, 30, 255 });
+				Luxon::Renderer::SetClearColor({ 50, 30, 30, 255 });
 				Luxon::Renderer::Clear();
-				Luxon::Renderer::DrawRect(m_RectX, m_RectY, 100, 100, { 0,0,255,255 });
+				Luxon::Renderer::DrawRect((int)m_RectPosition.x,
+										  (int)m_RectPosition.y, 
+										100, 100, { 0,0,255,255 });
 				Luxon::Renderer::EndScene();
 			}
 		}
@@ -56,9 +64,7 @@ public:
 
 private:
 	std::unique_ptr<Luxon::Window> m_Window;
-
-	float m_RectY = 100.f;
-	float m_RectX = 100.f;
+	Luxon::Core::Vector2f m_RectPosition = { 100.0f,100.0f }; // 位置向量
 };
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow) {
 	SandboxApp* app = new SandboxApp();
