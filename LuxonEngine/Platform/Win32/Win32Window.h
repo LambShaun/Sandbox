@@ -35,8 +35,8 @@ namespace Luxon {
 
 		struct WindowData {
 			std::string Title;
-			unsigned int Width;
-			unsigned int Height;
+			unsigned int Width = 0;
+			unsigned int Height = 0;
 		};
 
 		WindowData m_Data;
