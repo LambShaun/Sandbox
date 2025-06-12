@@ -74,6 +74,31 @@ namespace GDI {
 		BitBlt(s_hWindowDC, 0, 0, s_Width, s_Height, s_hMemoryDC, 0, 0, SRCCOPY); // 复制画面到屏幕
 	}
 
+	void GDIRendererAPI::DrawImage(int x, int y, const Resource::Texture& texture) {
+		BITMAPINFO bmi = {};
+		bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+		bmi.bmiHeader.biWidth = texture.GetWidth();
+		// 使用负数高度来告诉 StretchDIBits像素数据是自上而下存储的
+		bmi.bmiHeader.biHeight = -static_cast<LONG>(texture.GetHeight());
+		bmi.bmiHeader.biPlanes = 1;
+		bmi.bmiHeader.biBitCount = 32; // 内部统一使用32位ARGB格式
+		bmi.bmiHeader.biCompression = BI_RGB;
+
+		StretchDIBits(
+			s_hMemoryDC,          // 目标DC：我们的后台内存画板
+			x, y,                 // 目标矩形的左上角坐标
+			texture.GetWidth(),   // 目标矩形的宽度
+			texture.GetHeight(),  // 目标矩形的高度
+			0, 0,                 // 源矩形的左上角坐标(从图片的0,0开始)
+			texture.GetWidth(),   // 源矩形的宽度
+			texture.GetHeight(),  // 源矩形的高度
+			texture.GetData(),    // 指向像素数据内存块的指针
+			&bmi,                 // 指向描述像素数据格式的 BITMAPINFO 结构
+			DIB_RGB_COLORS,       // 表示颜色数据是RGB值
+			SRCCOPY               // 直接复制像素
+		);
+	}
+
 } // namespace GDI
 } // namespace Rendering
 } // namespace Function

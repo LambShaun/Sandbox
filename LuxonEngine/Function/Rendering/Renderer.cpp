@@ -35,6 +35,10 @@ namespace Rendering {
 		s_RendererAPI->DrawRect(x, y, width ,height, color);
 	}
 
+	void Renderer::DrawImage(int x, int y, const Resource::Texture& texture) {
+		s_RendererAPI->DrawImage(x, y, texture);
+	}
+
 } // namespace Rendering
 } // namespace Function
 } // namespace Luxon

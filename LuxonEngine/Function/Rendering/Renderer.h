@@ -7,6 +7,7 @@
 #pragma once
 
 #include "RendererAPI.h"
+#include "resource/Texture.h"
 
 #include <memory>
 
@@ -23,6 +24,7 @@ namespace Rendering {
 		static void SetClearColor(const Color& color);
 		static void Clear();
 		static void DrawRect(int x, int y, int width, int height, const Color& color);
+		static void DrawImage(int x, int y, const Resource::Texture& texture);
 
 	private:
 		static std::unique_ptr<RendererAPI>s_RendererAPI;

@@ -7,6 +7,7 @@
 #pragma once
 
 #include "Function/Rendering/RendererAPI.h"
+#include "Resource/Texture.h"
 
 #include <Windows.h>
 
@@ -22,7 +23,7 @@ namespace GDI {
 		virtual void SetClearColor(const Color& color) override;
 		virtual void Clear() override;
 		virtual void DrawRect(int x, int y, int width, int height, const Color& color) override;
-
+		virtual void DrawImage(int x, int y, const Resource::Texture& texture) override;
 
 	private:
 		static HWND s_hWnd;				// 记录渲染目标窗口句柄 全局唯一窗口

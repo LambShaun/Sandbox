@@ -6,6 +6,8 @@
 
 #pragma once
 
+#include "Resource/Texture.h"
+
 #include <cstdint>
 
 namespace Luxon {
@@ -25,6 +27,7 @@ namespace Rendering {
 		virtual void Clear() = 0;								// ÇåÆÁ
 		// »æÍ¼(¾ØÐÎ)
 		virtual void DrawRect(int x, int y, int width, int height, const Color& color) = 0;
+		virtual void DrawImage(int x, int y, const Resource::Texture& texture) = 0;
 	};
 
 } // namespace Rendering
