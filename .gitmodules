@@ -1,3 +1,6 @@
 [submodule "LuxonEngine/ThirdParty/stb"]
 	path = LuxonEngine/ThirdParty/stb
 	url = https://github.com/nothings/stb.git
+[submodule "LuxonEngine/ThirdParty/nlohmann_json"]
+	path = LuxonEngine/ThirdParty/nlohmann_json
+	url = https://github.com/nlohmann/json.git
