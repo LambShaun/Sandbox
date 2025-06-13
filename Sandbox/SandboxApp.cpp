@@ -4,6 +4,7 @@
 #include "Core/Math/Vec2D.h"
 #include "Core/Time/Time.h"
 #include "Resource/Texture.h"
+#include "Function/Physics/Collision.h"
 
 #include <memory>
 #include <Windows.h>
@@ -36,31 +37,10 @@ public:
 		float speed = 1000.0f;
 		m_RectPosition += direction * speed * ts;
 
-		// 简易的碰撞检测
-		// 获取图像尺寸
-		if (m_Texture) {
-			float windowWidth = static_cast<float>(m_Window->GetWidth());
-			float windowHeight = static_cast<float>(m_Window->GetHeight());
-			float textureWidth = static_cast<float>(m_Texture->GetWidth());
-			float textureHeight = static_cast<float>(m_Texture->GetWidth());
-
-			// 左边碰撞检测
-			if (m_RectPosition.x < 0.0f) {
-				m_RectPosition.x = 0.0f;
-			}
-
-			if (m_RectPosition.x + textureWidth > windowWidth) {
-				m_RectPosition.x = windowWidth - textureWidth;
-			}
-
-			if (m_RectPosition.y < 0.0f) {
-				m_RectPosition.y = 0.0f;
-			}
-
-			if (m_RectPosition.y + textureHeight > windowHeight) {
-				m_RectPosition.y = windowHeight - textureHeight;
-			}
-		}
+		m_RectPosition = Luxon::Function::Physics::Collision::CheckWindowCollision(
+			m_RectPosition,           // 传入当前位置
+			{ 128.0f, 128.0f },       // 传入矩形大小 暂时写死
+			*m_Window);
 
 		// Renderer
 		Luxon::Function::Rendering::Renderer::BeginScene();
