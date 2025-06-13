@@ -13,7 +13,7 @@ public:
 	SandboxApp() {
 		m_Window = std::unique_ptr<Luxon::Platform::Window>(Luxon::Platform::Window::Create());
 		Luxon::Function::Rendering::Renderer::Init(m_Window->GetNativeWindow());	
-		m_Texture = Luxon::Resource::Texture::Load("assets/test.bmp");
+		m_Texture = Luxon::Resource::Texture::Load("assets/sprite.png");
 	}
 	~SandboxApp() {
 		Luxon::Function::Rendering::Renderer::Shutdown();
