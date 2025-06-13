@@ -39,7 +39,7 @@ public:
 
 		m_RectPosition = Luxon::Function::Physics::Collision::CheckWindowCollision(
 			m_RectPosition,           // 传入当前位置
-			{ 128.0f, 128.0f },       // 传入矩形大小 暂时写死
+			{ (float)m_Texture->GetWidth(), (float)m_Texture->GetHeight() },       // 传入矩形大小 暂时写死
 			*m_Window);
 
 		// Renderer
