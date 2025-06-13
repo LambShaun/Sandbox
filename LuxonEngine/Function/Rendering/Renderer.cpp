@@ -39,6 +39,11 @@ namespace Rendering {
 		s_RendererAPI->DrawImage(x, y, texture);
 	}
 
+	void Renderer::DrawSubTexture(int x, int y, const Resource::Texture& texture,
+		const Core::Math::Vector2i& subPos,
+		const Core::Math::Vector2i& subSize) {
+		s_RendererAPI->DrawSubTexture(x, y, texture, subPos, subSize);
+	}
 } // namespace Rendering
 } // namespace Function
 } // namespace Luxon

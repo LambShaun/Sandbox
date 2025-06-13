@@ -25,7 +25,9 @@ namespace Rendering {
 		static void Clear();
 		static void DrawRect(int x, int y, int width, int height, const Color& color);
 		static void DrawImage(int x, int y, const Resource::Texture& texture);
-
+		static void DrawSubTexture(int x, int y, const Resource::Texture& texture,
+			const Core::Math::Vector2i& subPos,
+			const Core::Math::Vector2i& subSize);
 	private:
 		static std::unique_ptr<RendererAPI>s_RendererAPI;
 	};
