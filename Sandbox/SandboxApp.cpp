@@ -36,6 +36,32 @@ public:
 		float speed = 1000.0f;
 		m_RectPosition += direction * speed * ts;
 
+		// ¼òÒ×µÄÅö×²¼ì²â
+		// »ñÈ¡Í¼Ïñ³ß´ç
+		if (m_Texture) {
+			float windowWidth = static_cast<float>(m_Window->GetWidth());
+			float windowHeight = static_cast<float>(m_Window->GetHeight());
+			float textureWidth = static_cast<float>(m_Texture->GetWidth());
+			float textureHeight = static_cast<float>(m_Texture->GetWidth());
+
+			// ×ó±ßÅö×²¼ì²â
+			if (m_RectPosition.x < 0.0f) {
+				m_RectPosition.x = 0.0f;
+			}
+
+			if (m_RectPosition.x + textureWidth > windowWidth) {
+				m_RectPosition.x = windowWidth - textureWidth;
+			}
+
+			if (m_RectPosition.y < 0.0f) {
+				m_RectPosition.y = 0.0f;
+			}
+
+			if (m_RectPosition.y + textureHeight > windowHeight) {
+				m_RectPosition.y = windowHeight - textureHeight;
+			}
+		}
+
 		// Renderer
 		Luxon::Function::Rendering::Renderer::BeginScene();
 		Luxon::Function::Rendering::Renderer::SetClearColor({ 30,30,30,255 });

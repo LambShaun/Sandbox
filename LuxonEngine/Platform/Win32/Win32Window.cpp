@@ -59,11 +59,17 @@ namespace Win32 {
 		wc.lpszClassName = CLASS_NAME;
 
 		RegisterClassExW(&wc);
-		std::wstring wTitle(m_Data.Title.begin(), m_Data.Title.end());
+		// 根据所需的客户区矩形大小计算所需的窗口矩形大小
+		RECT windowRect = { 0, 0, (LONG)m_Data.Width, (LONG)m_Data.Height };
+		AdjustWindowRect(&windowRect, WS_OVERLAPPEDWINDOW, FALSE);
 
+		int windowWidth = windowRect.right - windowRect.left;
+		int windowHeight = windowRect.bottom - windowRect.top;
+
+		std::wstring wTitle(m_Data.Title.begin(), m_Data.Title.end());
 		m_hWnd = CreateWindowExW(
 			0, CLASS_NAME, wTitle.c_str(), WS_OVERLAPPEDWINDOW,
-			CW_USEDEFAULT, CW_USEDEFAULT, m_Data.Width, m_Data.Height,
+			CW_USEDEFAULT, CW_USEDEFAULT, windowWidth, windowHeight,
 			NULL, NULL, GetModuleHandle(NULL), NULL
 		);
 
