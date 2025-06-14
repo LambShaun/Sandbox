@@ -41,8 +41,9 @@ namespace Rendering {
 
 	void Renderer::DrawSubTexture(int x, int y, const Resource::Texture& texture,
 		const Core::Math::Vector2i& subPos,
-		const Core::Math::Vector2i& subSize) {
-		s_RendererAPI->DrawSubTexture(x, y, texture, subPos, subSize);
+		const Core::Math::Vector2i& subSize,
+		bool flipHorizontal ) {
+		s_RendererAPI->DrawSubTexture(x, y, texture, subPos, subSize, flipHorizontal);
 	}
 } // namespace Rendering
 } // namespace Function

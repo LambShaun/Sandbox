@@ -26,7 +26,8 @@ namespace GDI {
 		virtual void DrawImage(int x, int y, const Resource::Texture& texture) override;
 		virtual void DrawSubTexture(int x, int y, const Resource::Texture& texture,
 			const Core::Math::Vector2i& subPos,
-			const Core::Math::Vector2i& subSize) override;
+			const Core::Math::Vector2i& subSize,
+			bool flipHorizontal = false) override;
 	private:
 		static HWND s_hWnd;				// 记录渲染目标窗口句柄 全局唯一窗口
 		static HDC s_hWindowDC;			// 设备上下文(DC)

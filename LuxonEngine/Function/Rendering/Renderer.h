@@ -27,7 +27,8 @@ namespace Rendering {
 		static void DrawImage(int x, int y, const Resource::Texture& texture);
 		static void DrawSubTexture(int x, int y, const Resource::Texture& texture,
 			const Core::Math::Vector2i& subPos,
-			const Core::Math::Vector2i& subSize);
+			const Core::Math::Vector2i& subSize,
+			bool flipHorizontal = false);
 	private:
 		static std::unique_ptr<RendererAPI>s_RendererAPI;
 	};

@@ -32,7 +32,8 @@ namespace Rendering {
 		// 绘图(精灵图)
 		virtual void DrawSubTexture(int x, int y, const Resource::Texture& texture,
 			const Core::Math::Vector2i& subPos,			// 子区域在精灵图的坐标
-			const Core::Math::Vector2i& subSize) = 0;	// 子区域大小
+			const Core::Math::Vector2i& subSize,		// 子区域大小
+			bool flipHorizontal = false) = 0;	
 	};
 
 } // namespace Rendering

@@ -73,10 +73,10 @@ namespace GDI {
 	}
 	
 	void GDIRendererAPI::DrawImage(int x, int y, const Resource::Texture& texture) {
-		DrawSubTexture(x, y, texture, { 0,0 }, { (int)texture.GetWidth(), (int)texture.GetHeight() });
+		DrawSubTexture(x, y, texture, { 0,0 }, { (int)texture.GetWidth(), (int)texture.GetHeight() }, false);
 	}
 
-	void GDIRendererAPI::DrawSubTexture(int x, int y, const Resource::Texture& texture, const Core::Math::Vector2i& subPos, const Core::Math::Vector2i& subSize) {
+	void GDIRendererAPI::DrawSubTexture(int x, int y, const Resource::Texture& texture, const Core::Math::Vector2i& subPos, const Core::Math::Vector2i& subSize, bool flipHorizontal) {
 		BITMAPINFO bmi = {};
 		bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
 		bmi.bmiHeader.biWidth = texture.GetWidth();
@@ -85,50 +85,58 @@ namespace GDI {
 		bmi.bmiHeader.biBitCount = 32; // 数据是32位ARGB
 		bmi.bmiHeader.biCompression = BI_RGB;
 
+		HDC srcDC = CreateCompatibleDC(s_hMemoryDC);
+		HBITMAP srcBitmap = CreateDIBitmap(s_hMemoryDC, &bmi.bmiHeader, CBM_INIT, texture.GetData(), &bmi, DIB_RGB_COLORS);
+		if (srcBitmap == NULL) { DeleteDC(srcDC); return; }
+		HBITMAP oldSrcBitmap = (HBITMAP)SelectObject(srcDC, srcBitmap);
+
 		BLENDFUNCTION blendFunc = {};
 		blendFunc.BlendOp = AC_SRC_OVER; // 标准的Alpha混合公式
 		blendFunc.BlendFlags = 0;
 		blendFunc.SourceConstantAlpha = 255; // 使用图片每个像素自己的Alpha值
 		blendFunc.AlphaFormat = AC_SRC_ALPHA; // 关键：指明源图片带有Alpha通道
 
-		// 调用 AlphaBlend 函数
-		AlphaBlend(
-			s_hMemoryDC,        // 目标DC：后台内存画板
-			x, y,               // 目标位置
-			subSize.x,          // 目标宽高就是子区域的大小
-			subSize.y,
+		if (!flipHorizontal) {
+			// 调用 AlphaBlend 函数
+			AlphaBlend(
+				s_hMemoryDC,        // 目标DC：后台内存画板
+				x, y,               // 目标位置
+				subSize.x,          // 目标宽高就是子区域的大小
+				subSize.y,
+				srcDC,        
+				subPos.x, subPos.y, // 源位置 从图片的哪个坐标开始切
+				subSize.x,          // 源大小
+				subSize.y,
+				blendFunc           // 传入配置好的混合函数
+			);
+		}
+		else {
+			HDC flipDC = CreateCompatibleDC(s_hMemoryDC);
+			HBITMAP flipBitmap = CreateCompatibleBitmap(s_hMemoryDC, subSize.x, subSize.y);
+			HBITMAP oldFlipBitmap = (HBITMAP)SelectObject(flipDC, flipBitmap);
+			StretchBlt(
+				flipDC,         
+				subSize.x, 0,    // 从右上角开始画
+				-subSize.x,      // 使用负数宽度来实现翻转
+				subSize.y,
+				srcDC,           // 源是包含原始精灵图的DC
+				subPos.x, subPos.y,
+				subSize.x, subSize.y,
+				SRCCOPY
+			);
 
-			s_hMemoryDC,        // 注意：GDI的一个怪癖，源DC和目标DC可以是同一个
-			// 它需要一个DC来处理位图 用后台DC即可
-			subPos.x, subPos.y, // 源位置 从图片的哪个坐标开始切
-			subSize.x,          // 源大小
-			subSize.y,
-			blendFunc           // 传入配置好的混合函数
-		);
-
-		// AlphaBlend 在处理时，似乎需要一个位图被选入源DC中。
-		// s_hMemoryDC 已经选入了 s_hBitmap，但里面的内容是上一帧的。
-		// 一个更完整的实现，是为每个Texture创建一个HBITMAP，但这会很复杂。
-		// 另一个方法是临时创建一个DC和位图，将texture数据放进去。
-		// 但最简单且通常能工作的技巧，是欺骗一下AlphaBlend，
-		// 它的内部实现会通过GetData指针重新读取数据。
-		// 需要把texture的数据临时"blt"到后台画布的某个地方再AlphaBlend回来
-		// 或者更简单：直接用StretchDIBits，因为它本身也能处理透明度，但AlphaBlend更专业。
-		// 为了保持简单和功能正确，还是需要一个临时的DC来持有的源数据。
-
-		HDC srcDC = CreateCompatibleDC(s_hMemoryDC);
-		HBITMAP srcBitmap = CreateDIBitmap(s_hMemoryDC, &bmi.bmiHeader, CBM_INIT, texture.GetData(), &bmi, DIB_RGB_COLORS);
-		if (srcBitmap == NULL) { DeleteDC(srcDC); return; }
-
-		HBITMAP oldBitmap = (HBITMAP)SelectObject(srcDC, srcBitmap);
-
-		AlphaBlend(
-			s_hMemoryDC, x, y, subSize.x, subSize.y,
-			srcDC, subPos.x, subPos.y, subSize.x, subSize.y,
-			blendFunc
-		);
-
-		SelectObject(srcDC, oldBitmap);
+			AlphaBlend(
+				s_hMemoryDC, x, y, subSize.x, subSize.y,
+				flipDC, 0, 0, subSize.x, subSize.y, 
+				blendFunc
+			);
+			// 清理翻转
+			SelectObject(flipDC, oldFlipBitmap);
+			DeleteObject(flipBitmap);
+			DeleteDC(flipDC);
+		}
+		// 清理临时的源DC资源
+		SelectObject(srcDC, oldSrcBitmap);
 		DeleteObject(srcBitmap);
 		DeleteDC(srcDC);
 	}
