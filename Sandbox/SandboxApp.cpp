@@ -7,6 +7,7 @@
 #include "Resource/Texture.h"
 #include "Function/Animation/Animator.h" 
 #include "Function/Animation/AnimationSet.h" 
+#include "Resource/ResourceManager.h"
 
 #include <memory>
 #include <Windows.h>
@@ -21,8 +22,8 @@ public:
         // 加载包含所有动画帧的精灵图
         try {
             // 加载精灵图和JSON
-            m_AnimationSet = Luxon::Function::Animation::AnimationSet::Load("assets/sprite_sheet.json");
-            m_Texture = Luxon::Resource::Texture::Load("assets/sprite_sheet.png");
+            m_AnimationSet = Luxon::Resource::ResourceManager<Luxon::Function::Animation::AnimationSet>::Load("assets/sprite_sheet.json");
+            m_Texture = Luxon::Resource::ResourceManager<Luxon::Resource::Texture>::Load("assets/sprite_sheet.png");
             // 动画控制器
             if (m_AnimationSet) {
                 m_Animator.Play(m_AnimationSet->GetAnimation("default"));
@@ -35,6 +36,8 @@ public:
     }
 
     ~SandBoxApp() {
+        Luxon::Resource::ResourceManager<Luxon::Resource::Texture>::ClearCache();
+        Luxon::Resource::ResourceManager<Luxon::Function::Animation::AnimationSet>::ClearCache();
         Luxon::Function::Rendering::Renderer::Shutdown();
     }
 
@@ -109,8 +112,8 @@ private:
     std::unique_ptr<Luxon::Platform::Window> m_Window;
     Luxon::Core::Math::Vector2f m_RectPosition = { 100.0f, 100.0f };
     // 精灵图以及解析后的动画数据
-    std::unique_ptr<Luxon::Resource::Texture> m_Texture;
-    std::unique_ptr<Luxon::Function::Animation::AnimationSet> m_AnimationSet;
+    std::shared_ptr<Luxon::Resource::Texture> m_Texture;
+    std::shared_ptr<Luxon::Function::Animation::AnimationSet> m_AnimationSet;
     // 动画控制器
     Luxon::Function::Animation::Animator m_Animator;
 };
