@@ -15,7 +15,7 @@ namespace Animation {
 		return nullptr;
 	}
 	
-	std::unique_ptr<AnimationSet> AnimationSet::Load(const std::string& filepath) {
+	std::shared_ptr<AnimationSet> AnimationSet::Load(const std::string& filepath) {
 		std::ifstream file(filepath);
 		if (!file.is_open()) {
 			throw std::runtime_error("AnimationSet::Load Error: Failed to open file: " + filepath);

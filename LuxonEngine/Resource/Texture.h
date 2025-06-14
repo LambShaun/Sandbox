@@ -32,7 +32,7 @@ namespace Resource {
 		}
 
 		// 从路径加载位图 用字符串来存储
-		static std::unique_ptr<Texture>	Load(const std::string& filepath);
+		static std::shared_ptr<Texture>	Load(const std::string& filepath);
 	private:
 		uint32_t m_Width;
 		uint32_t m_Height;

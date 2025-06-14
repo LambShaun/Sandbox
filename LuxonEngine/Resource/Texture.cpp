@@ -13,7 +13,7 @@ namespace Resource {
 		delete[]m_Data;
 	}
 
-	std::unique_ptr<Texture> Texture::Load(const std::string& filepath) {
+	std::shared_ptr<Texture> Texture::Load(const std::string& filepath) {
 		int width, height, channels;
 		// stbi_load 是 stb_image 的核心函数
 		// 参数：文件路径、宽度(输出)、高度(输出)、通道数(输出)、期望的通道数
@@ -22,7 +22,7 @@ namespace Resource {
 		stbi_uc* loaded_pixels = stbi_load(filepath.c_str(), &width, &height, &channels, 4);
         if (loaded_pixels == nullptr) {
             // 如果加载失败stbi_failure_reason() 会提供失败的原因
-            throw std::runtime_error("stb_image Error: Failed to load image: " + filepath + " - " + stbi_failure_reason());
+            throw std::runtime_error("Texture::Load Error [stb_image]: " + std::string(stbi_failure_reason()) + " - " + filepath);
         }
         // stb_image 加载的像素数据是 uint8_t 类型的 需要把它转换成 uint32_t
         // ARGB 格式 (0xAARRGGBB)
@@ -40,7 +40,7 @@ namespace Resource {
         stbi_image_free(loaded_pixels);
 
         // 创建的 Texture 对象并返回
-        return std::make_unique<Texture>(width, height, pixels);
+        return std::make_shared<Texture>(width, height, loaded_pixels);
 	}
 
 } // namespace Resource

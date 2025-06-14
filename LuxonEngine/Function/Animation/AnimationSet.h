@@ -20,7 +20,7 @@ namespace Animation {
 		// 通过名字获取一个动画序列
 		Function::Animation::Animation* GetAnimation(const std::string& name);
 		// 从JSON文件中加载整个动画集
-		static std::unique_ptr<AnimationSet>Load(const std::string& filepath);
+		static std::shared_ptr<AnimationSet>Load(const std::string& filepath);
 	
 	private:
 		// 使用 std::map 来存储从名字到动画序列的映射
