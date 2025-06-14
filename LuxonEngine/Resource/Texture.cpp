@@ -40,7 +40,7 @@ namespace Resource {
         stbi_image_free(loaded_pixels);
 
         // 创建的 Texture 对象并返回
-        return std::make_shared<Texture>(width, height, loaded_pixels);
+        return std::make_shared<Texture>(width, height, pixels);
 	}
 
 } // namespace Resource
